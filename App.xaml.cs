@@ -29,6 +29,7 @@ namespace ToggleMute
             var services = new ServiceCollection();
 
             services.AddSingleton<IAppConfigService, AppConfigService>();
+            services.AddSingleton<IMuteService, MuteService>();
 
             services.AddSingleton<TrayViewModel>();
             services.AddSingleton<SettingsViewModel>();

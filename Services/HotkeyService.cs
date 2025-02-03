@@ -1,4 +1,5 @@
-﻿using NHotkey.Wpf;
+﻿using Microsoft.Extensions.DependencyInjection;
+using NHotkey.Wpf;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -63,13 +64,14 @@ namespace ToggleMute.Services
         /// <exception cref="InvalidOperationException"></exception>
         private static Action GetActionForHotkey(string hotkeyName)
         {
-            var method = typeof(MuteService).GetMethod(hotkeyName, BindingFlags.Public | BindingFlags.Static);
+            var muteService = App.Current.ServiceProvider.GetRequiredService<IMuteService>();
+            var method = muteService.GetType().GetMethod(hotkeyName, BindingFlags.Public | BindingFlags.Instance);
             if (method == null || method.ReturnType != typeof(void) || method.GetParameters().Length > 0)
             {
                 throw new InvalidOperationException($"Cannot find coressponding method to {hotkeyName}");
             }
 
-            return (Action)Delegate.CreateDelegate(typeof(Action), method);
+            return () => { method.Invoke(muteService, null); };
         }
     }
 }

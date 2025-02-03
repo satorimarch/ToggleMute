@@ -5,6 +5,19 @@ using System.Runtime.InteropServices;
 
 namespace ToggleMute.Services
 {
+    public interface IMuteService
+    {
+        public void ToggleMuteActiveWindow();
+
+        public void MuteActiveWindow();
+
+        public void UnmuteActiveWindow();
+
+        public void UnmuteOtherWindows();
+
+        public void MuteOtherWindows();
+    }
+
     /// <summary>
     /// Functions for mute, unmute or toggle the mute status of a application.
     /// </summary>
@@ -12,7 +25,7 @@ namespace ToggleMute.Services
     /// Two process are regarded as same application by process Id and process name,
     /// to work correctly on multi-process application like web browser.
     /// </remarks>
-    public static class MuteService
+    public class MuteService : IMuteService
     {
         private static Func<uint, bool> EqualByIdAndName(uint currentId)
         {
@@ -27,7 +40,7 @@ namespace ToggleMute.Services
             return (id) => f(id) == false;
         }
 
-        public static void ToggleMuteActiveWindow()
+        public void ToggleMuteActiveWindow()
         {
             Debug.WriteLine("Try to toggle mute active window.");
             uint processId = GetActiveWindowProcessId();
@@ -35,28 +48,28 @@ namespace ToggleMute.Services
             ToggleMuteApplication(EqualByIdAndName(processId));
         }
 
-        public static void MuteActiveWindow()
+        public void MuteActiveWindow()
         {
             Debug.WriteLine("Try to mute active window.");
             uint processId = GetActiveWindowProcessId();
             MuteApplication(EqualByIdAndName(processId));
         }
 
-        public static void UnmuteActiveWindow()
+        public void UnmuteActiveWindow()
         {
             Debug.WriteLine("Try to unmute active window.");
             uint processId = GetActiveWindowProcessId();
             UnmuteApplication(EqualByIdAndName(processId));
         }
 
-        public static void UnmuteOtherWindows()
+        public void UnmuteOtherWindows()
         {
             Debug.WriteLine("Try to unmute other windows.");
             uint processId = GetActiveWindowProcessId();
             UnmuteApplication(NotEqualByIdAndName(processId));
         }
 
-        public static void MuteOtherWindows()
+        public void MuteOtherWindows()
         {
             Debug.WriteLine("Try to mute other windows.");
             uint processId = GetActiveWindowProcessId();
