@@ -8,7 +8,7 @@
         d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}"
         mc:Ignorable="d"
         Title="Settings"
-        Height="300"
+        Height="400"
         Width="400"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
@@ -24,7 +24,7 @@
                     Margin="15"
                     VerticalAlignment="Top"
                     Orientation="Vertical">
-
+            <Label Content="Hotkeys:"/>
             <ItemsControl Name="HotkeyItemControl" ItemsSource="{Binding Hotkeys, Mode=TwoWay}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -43,6 +43,9 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+            <Label Content="Ignore process names (comma-separated, without &quot;.exe&quot;):"/>
+            <TextBox Text="{Binding IgnoredProcessesText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                     Margin="10,5" Height="75" TextChanged="TextBox_TextChanged"/>
         </StackPanel>
 
         <Border Grid.Row="1"
@@ -56,6 +59,10 @@
                         Command="{Binding ResetConfigCommand}"
                         Width="80"
                         Margin="0,0,10,0" />
+
+                <Button Content="Save"
+                        Command="{Binding SaveConfigCommand}"
+                        Width="80"/>
 
             </StackPanel>
         </Border>

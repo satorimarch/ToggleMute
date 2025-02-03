@@ -13,6 +13,7 @@ namespace ToggleMute
     {
         private TaskbarIcon? _trayIcon;
         private readonly IAppConfigService _configService;
+        private readonly IMuteService _muteService;
 
         public IServiceProvider ServiceProvider { get; }
 
@@ -22,6 +23,7 @@ namespace ToggleMute
         {
             ServiceProvider = ConfigureServices();
             _configService = ServiceProvider.GetRequiredService<IAppConfigService>();
+            _muteService = ServiceProvider.GetRequiredService<IMuteService>();
         }
 
         private static ServiceProvider ConfigureServices()
@@ -37,13 +39,17 @@ namespace ToggleMute
             return services.BuildServiceProvider();
         }
 
+        void LoadConfig(AppConfig config)
+        {
+            HotkeyService.RegisterAllFromConfig(config);
+            _muteService.IgnoreProcesses = config.IgnoreProcesses;
+        }
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var config = _configService.Load();
-
             try
             {
-                HotkeyService.RegisterAllFromConfig(config);
+                LoadConfig(_configService.Load());
             }
             catch (HotkeyAlreadyRegisteredException)
             {
@@ -53,7 +59,7 @@ namespace ToggleMute
                 if (result == MessageBoxResult.Yes)
                 {
                     _configService.Save(new AppConfig());
-                    HotkeyService.UnregisterAllFromConfig(config);
+                    LoadConfig(_configService.CurrentConfig);
                 }
                 else
                 {
@@ -67,7 +73,7 @@ namespace ToggleMute
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            HotkeyService.UnregisterAllFromConfig(_configService.Config);
+            HotkeyService.UnregisterAllFromConfig(_configService.CurrentConfig);
             _trayIcon?.Dispose();
         }
     }

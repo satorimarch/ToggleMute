@@ -6,7 +6,7 @@ namespace ToggleMute.Services
 {
     public interface IAppConfigService
     {
-        public AppConfig Config { get; set; }
+        public AppConfig CurrentConfig { get; set; }
 
         public AppConfig Load();
 
@@ -17,7 +17,7 @@ namespace ToggleMute.Services
     {
         private static readonly string ConfigPath = "config.json";
 
-        public AppConfig Config { get; set; } = new();
+        public AppConfig CurrentConfig { get; set; } = new();
 
         /// <remarks>
         /// TODO: Notify the outside on error occurs, instead of create new config silently.
@@ -26,13 +26,13 @@ namespace ToggleMute.Services
         {
             if (File.Exists(ConfigPath) == false)
             {
-                Config = new AppConfig();
-                return Config;
+                CurrentConfig = new AppConfig();
+                return CurrentConfig;
             }
 
             var json = File.ReadAllText(ConfigPath);
-            Config = JsonSerializer.Deserialize<AppConfig>(json) ?? new AppConfig();
-            return Config;
+            CurrentConfig = JsonSerializer.Deserialize<AppConfig>(json) ?? new AppConfig();
+            return CurrentConfig;
         }
 
         public void Save(AppConfig config)

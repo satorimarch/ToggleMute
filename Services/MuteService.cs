@@ -1,5 +1,6 @@
 ﻿using NAudio.CoreAudioApi;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -16,6 +17,8 @@ namespace ToggleMute.Services
         public void UnmuteOtherWindows();
 
         public void MuteOtherWindows();
+
+        public HashSet<string>? IgnoreProcesses { get; set; }
     }
 
     /// <summary>
@@ -27,17 +30,19 @@ namespace ToggleMute.Services
     /// </remarks>
     public class MuteService : IMuteService
     {
-        private static Func<uint, bool> EqualByIdAndName(uint currentId)
+        public HashSet<string>? IgnoreProcesses { get; set; }
+
+        private static Func<Process, bool> EqualByIdAndName(uint currentId)
         {
             var currentProcess = Process.GetProcessById((int)currentId);
-            return (id) =>
-                id == currentId || Process.GetProcessById((int)id).ProcessName == currentProcess.ProcessName;
+            return (process) =>
+                process.Id == currentId || process.ProcessName == currentProcess.ProcessName;
         }
 
-        private static Func<uint, bool> NotEqualByIdAndName(uint currentId)
+        private static Func<Process, bool> NotEqualByIdAndName(uint currentId)
         {
             var f = EqualByIdAndName(currentId);
-            return (id) => f(id) == false;
+            return (process) => f(process) == false;
         }
 
         public void ToggleMuteActiveWindow()
@@ -76,22 +81,22 @@ namespace ToggleMute.Services
             MuteApplication(NotEqualByIdAndName(processId));
         }
 
-        private static void ToggleMuteApplication(Func<uint, bool> shouldToggle)
+        private void ToggleMuteApplication(Func<Process, bool> shouldToggle)
         {
             ChangeMuteStatus(shouldToggle, (prev) => !prev);
         }
 
-        private static void MuteApplication(Func<uint, bool> shouldMute)
+        private void MuteApplication(Func<Process, bool> shouldMute)
         {
             ChangeMuteStatus(shouldMute, (_) => true);
         }
 
-        private static void UnmuteApplication(Func<uint, bool> shouldMute)
+        private void UnmuteApplication(Func<Process, bool> shouldMute)
         {
             ChangeMuteStatus(shouldMute, (_) => false);
         }
 
-        private static void ChangeMuteStatus(Func<uint, bool> shouldChange, Func<bool, bool> changeFromOld)
+        private void ChangeMuteStatus(Func<Process, bool> shouldChange, Func<bool, bool> changeFromOld)
         {
             var device = new MMDeviceEnumerator().GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
             var sessions = device.AudioSessionManager.Sessions;
@@ -99,8 +104,8 @@ namespace ToggleMute.Services
             for (int i = 0; i < sessions.Count; i++)
             {
                 var session = sessions[i];
-                Debug.WriteLine(session.GetProcessID);
-                if (shouldChange(session.GetProcessID))
+                Process process = Process.GetProcessById((int)session.GetProcessID);
+                if ((IgnoreProcesses?.Contains(process.ProcessName) ?? false) == false && shouldChange(process))
                 {
                     session.SimpleAudioVolume.Mute = changeFromOld(session.SimpleAudioVolume.Mute);
                 }
