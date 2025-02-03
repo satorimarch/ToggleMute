@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using System.Windows;
-using ToggleMute.Services;
 using ToggleMute.Views;
 
 namespace ToggleMute.ViewModels

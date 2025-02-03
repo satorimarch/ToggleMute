@@ -3,7 +3,6 @@ using NHotkey.Wpf;
 using System;
 using System.Diagnostics;
 using System.Reflection;
-using System.Windows.Input;
 using ToggleMute.Models;
 
 namespace ToggleMute.Services

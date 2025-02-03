@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
-using ToggleMute.Services;
 using ToggleMute.ViewModels;
 
 namespace ToggleMute.Views
