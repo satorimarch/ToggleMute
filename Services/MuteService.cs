@@ -6,6 +6,13 @@ using System.Runtime.InteropServices;
 
 namespace ToggleMute.Services
 {
+    /// <summary>
+    /// Functions for mute, unmute or toggle the mute status of a application.
+    /// </summary>
+    /// <remarks>
+    /// Two process are regarded as same application by process Id and process name,
+    /// to work correctly on multi-process application like web browser.
+    /// </remarks>
     public interface IMuteService
     {
         public void ToggleMuteActiveWindow();
@@ -18,16 +25,13 @@ namespace ToggleMute.Services
 
         public void MuteOtherWindows();
 
+        /// <summary>
+        /// Process names of process to be ignored.
+        /// </summary>
         public HashSet<string>? IgnoreProcesses { get; set; }
     }
 
-    /// <summary>
-    /// Functions for mute, unmute or toggle the mute status of a application.
-    /// </summary>
-    /// <remarks>
-    /// Two process are regarded as same application by process Id and process name,
-    /// to work correctly on multi-process application like web browser.
-    /// </remarks>
+    /// <inheritdoc cref="IMuteService"/>
     public class MuteService : IMuteService
     {
         public HashSet<string>? IgnoreProcesses { get; set; }

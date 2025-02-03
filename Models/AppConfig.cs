@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
+using ToggleMute.Services;
 
 namespace ToggleMute.Models
 {
-    /// <summary>
-    /// No hotkeys are set on default.
-    /// </summary>
     public class AppConfig
     {
+        /// <summary>
+        /// No hotkeys are set by default.
+        /// </summary>
         /// <remarks>
-        /// Caution: The name of hotkey must be same with static method name in <see cref="MuteService"/>.
+        /// <b>Caution</b>: The name of hotkey must be the same with method name in <see cref="IMuteService"/>.
         /// </remarks>
         public List<HotkeySetting> Hotkeys { get; set; } = [
             new HotkeySetting("ToggleMuteActiveWindow"),
