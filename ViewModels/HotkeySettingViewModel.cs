@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using NHotkey;
 using System.Windows.Forms;
 using ToggleMute.Models;
@@ -20,11 +21,13 @@ namespace ToggleMute.ViewModels
         [RelayCommand]
         private void CommitHotkey()
         {
+            var hotkeyService = App.Current.ServiceProvider.GetRequiredService<IHotkeyService>();
+
             if (Hotkey.HasHotkey())
             {
                 try
                 {
-                    HotkeyService.RegisterHotkey(Hotkey);
+                    hotkeyService.RegisterHotkey(Hotkey);
                 }
                 catch (HotkeyAlreadyRegisteredException)
                 {
@@ -34,7 +37,7 @@ namespace ToggleMute.ViewModels
             }
             else
             {
-                HotkeyService.UnregisterHotkey(Hotkey.Name);
+                hotkeyService.UnregisterHotkey(Hotkey.Name);
             }
         }
     }

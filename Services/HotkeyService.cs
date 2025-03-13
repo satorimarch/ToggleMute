@@ -7,12 +7,26 @@ using ToggleMute.Models;
 
 namespace ToggleMute.Services
 {
-    public static class HotkeyService
+    public interface IHotkeyService
     {
         /// <summary>
         /// Register or unregister hotkey according to <see cref="HotkeySetting.HasHotkey"/>
         /// </summary>
-        public static void RegisterOrUnregisterHotkey(HotkeySetting hotkey)
+        public void RegisterOrUnregisterHotkey(HotkeySetting hotkey);
+
+        public void RegisterHotkey(HotkeySetting hotkey);
+
+        public void UnregisterAllFromConfig(AppConfig config);
+
+        public void UnregisterHotkey(string name);
+
+        public void RegisterAllFromConfig(AppConfig config);
+
+    }
+
+    public class HotkeyService : IHotkeyService
+    {
+        public void RegisterOrUnregisterHotkey(HotkeySetting hotkey)
         {
             if (hotkey.HasHotkey())
             {
@@ -24,7 +38,7 @@ namespace ToggleMute.Services
             }
         }
 
-        public static void RegisterHotkey(HotkeySetting hotkey)
+        public void RegisterHotkey(HotkeySetting hotkey)
         {
 
             var action = GetActionForHotkey(hotkey.Name);
@@ -32,12 +46,12 @@ namespace ToggleMute.Services
             Debug.WriteLine($"Hotkey has been registered: {hotkey.Name} with {hotkey}.");
         }
 
-        public static void UnregisterHotkey(string name)
+        public void UnregisterHotkey(string name)
         {
             HotkeyManager.Current.Remove(name);
         }
 
-        public static void RegisterAllFromConfig(AppConfig config)
+        public void RegisterAllFromConfig(AppConfig config)
         {
             Debug.WriteLine("Start to register hotkeys from config.");
             UnregisterAllFromConfig(config);
@@ -47,7 +61,7 @@ namespace ToggleMute.Services
             }
         }
 
-        public static void UnregisterAllFromConfig(AppConfig config)
+        public void UnregisterAllFromConfig(AppConfig config)
         {
             foreach (var property in config.Hotkeys)
             {

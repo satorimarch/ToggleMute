@@ -14,6 +14,7 @@ namespace ToggleMute
         private TaskbarIcon? _trayIcon;
         private readonly IAppConfigService _configService;
         private readonly IMuteService _muteService;
+        private readonly IHotkeyService _hotkeyService;
 
         public IServiceProvider ServiceProvider { get; }
 
@@ -24,6 +25,7 @@ namespace ToggleMute
             ServiceProvider = ConfigureServices();
             _configService = ServiceProvider.GetRequiredService<IAppConfigService>();
             _muteService = ServiceProvider.GetRequiredService<IMuteService>();
+            _hotkeyService = ServiceProvider.GetRequiredService<IHotkeyService>();
         }
 
         private static ServiceProvider ConfigureServices()
@@ -32,6 +34,7 @@ namespace ToggleMute
 
             services.AddSingleton<IAppConfigService, AppConfigService>();
             services.AddSingleton<IMuteService, MuteService>();
+            services.AddSingleton<IHotkeyService, HotkeyService>();
 
             services.AddSingleton<TrayViewModel>();
             services.AddSingleton<SettingsViewModel>();
@@ -41,7 +44,7 @@ namespace ToggleMute
 
         void LoadConfig(AppConfig config)
         {
-            HotkeyService.RegisterAllFromConfig(config);
+            _hotkeyService.RegisterAllFromConfig(config);
             _muteService.IgnoreProcesses = config.IgnoreProcesses;
         }
 
@@ -73,7 +76,7 @@ namespace ToggleMute
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            HotkeyService.UnregisterAllFromConfig(_configService.CurrentConfig);
+            _hotkeyService.UnregisterAllFromConfig(_configService.CurrentConfig);
             _trayIcon?.Dispose();
         }
     }

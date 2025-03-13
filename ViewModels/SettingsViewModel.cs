@@ -13,6 +13,7 @@ namespace ToggleMute.ViewModels
     public partial class SettingsViewModel : ObservableObject
     {
         private readonly IAppConfigService _configService;
+        private readonly IHotkeyService _hotkeyService;
 
         [ObservableProperty]
         private List<HotkeySettingViewModel> _hotkeys;
@@ -22,10 +23,10 @@ namespace ToggleMute.ViewModels
 
         private readonly IMuteService _muteService;
 
-        public SettingsViewModel(IAppConfigService configService, IMuteService muteService)
+        public SettingsViewModel(IAppConfigService configService, IHotkeyService hotkeyService, IMuteService muteService)
         {
             _configService = configService;
-
+            _hotkeyService = hotkeyService;
             _muteService = muteService;
 
             Hotkeys = new(_configService.CurrentConfig.Hotkeys.Select((hotkey) => new HotkeySettingViewModel(hotkey)));
@@ -51,7 +52,7 @@ namespace ToggleMute.ViewModels
                 return;
             }
 
-            HotkeyService.UnregisterAllFromConfig(_configService.CurrentConfig);
+            _hotkeyService.UnregisterAllFromConfig(_configService.CurrentConfig);
 
             _configService.Save(new AppConfig());
 
