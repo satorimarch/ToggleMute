@@ -81,7 +81,7 @@ namespace ToggleMute.Services
             var method = muteService.GetType().GetMethod(hotkeyName, BindingFlags.Public | BindingFlags.Instance);
             if (method == null || method.ReturnType != typeof(void) || method.GetParameters().Length > 0)
             {
-                throw new InvalidOperationException($"Cannot find coressponding method to {hotkeyName}");
+                throw new InvalidOperationException($"Cannot find corresponding method to {hotkeyName}");
             }
 
             return () => { method.Invoke(muteService, null); };

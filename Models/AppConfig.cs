@@ -10,7 +10,7 @@ namespace ToggleMute.Models
         /// No hotkeys are set by default.
         /// </summary>
         /// <remarks>
-        /// <b>Caution</b>: The name of hotkey must be the same with method name in <see cref="IMuteService"/>.
+        /// <b>Caution</b>: The hotkey names must exactly match the method names in <see cref="IMuteService"/>.
         /// </remarks>
         public List<HotkeySetting> Hotkeys { get; set; } = [
             new HotkeySetting("ToggleMuteActiveWindow"),

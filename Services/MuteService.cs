@@ -7,11 +7,11 @@ using System.Runtime.InteropServices;
 namespace ToggleMute.Services
 {
     /// <summary>
-    /// Functions for mute, unmute or toggle the mute status of a application.
+    /// Provides functions to mute, unmute, or toggle the mute status of an application.
     /// </summary>
     /// <remarks>
-    /// Two process are regarded as same application by process Id and process name,
-    /// to work correctly on multi-process application like web browser.
+    /// Two processes are considered the same application if they share the same process ID and process name.
+    /// This ensures proper functionality for multi-process applications, such as web browsers.
     /// </remarks>
     public interface IMuteService
     {
