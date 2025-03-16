@@ -26,6 +26,9 @@ namespace ToggleMute
             _configService = ServiceProvider.GetRequiredService<IAppConfigService>();
             _muteService = ServiceProvider.GetRequiredService<IMuteService>();
             _hotkeyService = ServiceProvider.GetRequiredService<IHotkeyService>();
+
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
         }
 
         private static ServiceProvider ConfigureServices()
@@ -78,6 +81,18 @@ namespace ToggleMute
         {
             _hotkeyService.UnregisterAllFromConfig(_configService.CurrentConfig);
             _trayIcon?.Dispose();
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = (Exception)e.ExceptionObject;
+            MessageBox.Show($"Unhandled exception: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show($"Dispatcher unhandled exception: {e.Exception.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            e.Handled = true;
         }
     }
 }
