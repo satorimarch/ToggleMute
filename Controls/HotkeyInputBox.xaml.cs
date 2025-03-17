@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -31,12 +32,15 @@ namespace ToggleMute.Controls
             InitializeComponent();
         }
 
+        private static readonly Key[] IgnoreKeysArray =
+        [
+            Key.LeftCtrl, Key.RightCtrl, Key.LeftAlt, Key.RightAlt, Key.System,
+            Key.LeftShift, Key.RightShift, Key.LWin, Key.RWin, Key.Return
+        ];
+
         private void HotkeyTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl ||
-                e.Key == Key.LeftAlt || e.Key == Key.RightAlt || e.Key == Key.System ||
-                e.Key == Key.LeftShift || e.Key == Key.RightShift ||
-                e.Key == Key.LWin || e.Key == Key.RWin || e.Key == Key.Return)
+            if (IgnoreKeysArray.Contains(e.Key))
             {
                 return;
             }
