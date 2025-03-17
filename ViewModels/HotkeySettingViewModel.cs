@@ -21,23 +21,16 @@ namespace ToggleMute.ViewModels
         [RelayCommand]
         private void CommitHotkey()
         {
-            var hotkeyService = App.Current.ServiceProvider.GetRequiredService<IHotkeyService>();
+            var appService = App.Current.ServiceProvider.GetRequiredService<IAppService>();
 
-            if (Hotkey.HasHotkey())
+            try
             {
-                try
-                {
-                    hotkeyService.RegisterHotkey(Hotkey);
-                }
-                catch (HotkeyAlreadyRegisteredException)
-                {
-                    MessageBox.Show("Hotkey has been registered, please change it and try again.", "Warning",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                appService.UpdateHotkey(Hotkey);
             }
-            else
+            catch (HotkeyAlreadyRegisteredException)
             {
-                hotkeyService.UnregisterHotkey(Hotkey.Name);
+                MessageBox.Show("Hotkey has been registered, please change it and try again.", "Warning",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

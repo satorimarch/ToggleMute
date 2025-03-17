@@ -4,7 +4,7 @@ using ToggleMute.Models;
 
 namespace ToggleMute.Services
 {
-    public interface IAppConfigService
+    public interface IConfigService
     {
         public AppConfig CurrentConfig { get; set; }
 
@@ -13,7 +13,7 @@ namespace ToggleMute.Services
         public void Save(AppConfig config);
     }
 
-    public class AppConfigService : IAppConfigService
+    public class ConfigService : IConfigService
     {
         private static readonly string ConfigPath = "config.json";
 
