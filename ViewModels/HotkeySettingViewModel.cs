@@ -26,8 +26,10 @@ namespace ToggleMute.ViewModels
         }
 
         [RelayCommand]
-        private void CommitHotkey()
+        private void CommitHotkey(Hotkey hotkey)
         {
+            this.Hotkey = new(this.Hotkey.Name, hotkey.Key, hotkey.Modifiers);
+
             try
             {
                 _appService.UpdateHotkey(Hotkey);

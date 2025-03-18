@@ -37,7 +37,6 @@
                             <Label VerticalAlignment="Center" Margin="10,0" Content="{Binding Hotkey.Name}"/>
                             <controls:HotkeyInputBox 
                                 Grid.Column="1"
-                                Hotkey="{Binding Hotkey, Mode=TwoWay}"
                                 Margin="10,5" />
                         </Grid>
                     </DataTemplate>

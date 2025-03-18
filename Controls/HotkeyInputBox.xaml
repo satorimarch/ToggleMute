@@ -4,12 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:ToggleMute.ViewModels"
+             d:DataContext="{d:DesignInstance Type=vm:HotkeySettingViewModel}"
              mc:Ignorable="d"
              Width="150">
 
 
     <TextBox 
-        Text="{Binding Hotkey, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}"
+        Text="{Binding Hotkey, Mode=OneWay}"
         IsReadOnly="True"
         PreviewKeyDown="HotkeyTextBox_PreviewKeyDown"/>
 </UserControl>

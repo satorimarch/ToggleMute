@@ -10,23 +10,6 @@ namespace ToggleMute.Controls
 {
     public partial class HotkeyInputBox : UserControl
     {
-        public static readonly DependencyProperty HotkeyProperty =
-                DependencyProperty.Register(
-                    "Hotkey",
-                    typeof(HotkeySetting),
-                    typeof(HotkeyInputBox),
-                    new FrameworkPropertyMetadata(
-                        null,
-                        FrameworkPropertyMetadataOptions.BindsTwoWayByDefault
-                    )
-                );
-
-        public HotkeySetting Hotkey
-        {
-            get => (HotkeySetting)GetValue(HotkeyProperty);
-            set => SetValue(HotkeyProperty, value);
-        }
-
         public HotkeyInputBox()
         {
             InitializeComponent();
@@ -64,9 +47,7 @@ namespace ToggleMute.Controls
                 modifiers = Keyboard.Modifiers;
             }
 
-            Hotkey = new HotkeySetting(Hotkey.Name, key, modifiers);
-
-            context.CommitHotkeyCommand.Execute(null);
+            context.CommitHotkeyCommand.Execute(new Hotkey(key, modifiers));
 
             e.Handled = true;
         }
