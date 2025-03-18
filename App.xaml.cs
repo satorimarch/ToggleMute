@@ -46,11 +46,25 @@ public partial class App : Application
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
+        trayIcon = FindResource("TrayIcon") as TaskbarIcon ??
+                   throw new InvalidOperationException($"{nameof(trayIcon)} can't be null.");
+
         try
         {
             appService.InitFromConfig(configService.Load());
         }
-        catch (HotkeyAlreadyRegisteredException)
+        catch (HotkeyAlreadyRegisteredException ex)
+        {
+            var result = MessageBox.Show($"Hotkey {ex.Name} has been registered, do you want to open the setting window?",
+                "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                var context = trayIcon.DataContext as TrayViewModel ?? throw new InvalidOperationException();
+                context.ShowSettingsCommand.Execute(null);
+            }
+        }
+        catch
         {
             var result = MessageBox.Show("The settings are incorrect, do you want to reset?", "Error",
                 MessageBoxButton.YesNo, MessageBoxImage.Error);
@@ -65,9 +79,6 @@ public partial class App : Application
                 Application.Current.Shutdown();
             }
         }
-
-        trayIcon = FindResource("TrayIcon") as TaskbarIcon ??
-                   throw new InvalidOperationException($"{nameof(trayIcon)} can't be null.");
     }
 
     private void Application_Exit(object sender, ExitEventArgs e)

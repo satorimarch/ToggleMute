@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text.Json;
 using ToggleMute.Models;
 
@@ -19,19 +20,18 @@ public class ConfigService : IConfigService
 
     public AppConfig CurrentConfig { get; set; } = new();
 
-    /// <remarks>
-    ///     TODO: Notify the outside on error occurs, instead of create new config silently.
-    /// </remarks>
     public AppConfig Load()
     {
         if (File.Exists(ConfigPath) == false)
         {
             CurrentConfig = new AppConfig();
-            return CurrentConfig;
+        }
+        else
+        {
+            var json = File.ReadAllText(ConfigPath);
+            CurrentConfig = JsonSerializer.Deserialize<AppConfig>(json) ?? throw new ArgumentException();
         }
 
-        var json = File.ReadAllText(ConfigPath);
-        CurrentConfig = JsonSerializer.Deserialize<AppConfig>(json) ?? new AppConfig();
         return CurrentConfig;
     }
 
