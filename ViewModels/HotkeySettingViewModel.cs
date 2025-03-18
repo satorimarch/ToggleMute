@@ -1,52 +1,48 @@
+using System.Linq;
+using System.Windows.Forms;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using NHotkey;
-using System.Linq;
-using System.Windows.Forms;
 using ToggleMute.Models;
 using ToggleMute.Services;
 
-namespace ToggleMute.ViewModels
+namespace ToggleMute.ViewModels;
+
+public partial class HotkeySettingViewModel : ObservableObject
 {
-    public partial class HotkeySettingViewModel : ObservableObject
+    [ObservableProperty]
+    private HotkeySetting _hotkey;
+
+    private readonly IConfigService configService;
+    private readonly IAppService appService;
+
+    public HotkeySettingViewModel(HotkeySetting hotkey)
     {
-        [ObservableProperty]
-        private HotkeySetting _hotkey;
+        Hotkey = hotkey;
 
-        private readonly IConfigService _configService;
-        private readonly IAppService _appService;
+        configService = App.Current.ServiceProvider.GetRequiredService<IConfigService>();
+        appService = App.Current.ServiceProvider.GetRequiredService<IAppService>();
+    }
 
-        public HotkeySettingViewModel(HotkeySetting hotkey)
+    [RelayCommand]
+    private void CommitHotkey(Hotkey hotkey)
+    {
+        Hotkey = new HotkeySetting(Hotkey.Name, hotkey.Key, hotkey.Modifiers);
+
+        try
         {
-            Hotkey = hotkey;
-
-            _configService = App.Current.ServiceProvider.GetRequiredService<IConfigService>();
-            _appService = App.Current.ServiceProvider.GetRequiredService<IAppService>();
+            appService.UpdateHotkey(Hotkey);
+        }
+        catch (HotkeyAlreadyRegisteredException)
+        {
+            MessageBox.Show("Hotkey has been registered, please change it and try again.", "Warning",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
-        [RelayCommand]
-        private void CommitHotkey(Hotkey hotkey)
-        {
-            this.Hotkey = new(this.Hotkey.Name, hotkey.Key, hotkey.Modifiers);
+        var existingHotkey = configService.CurrentConfig.Hotkeys.FirstOrDefault(h => h.Name == Hotkey.Name);
+        if (existingHotkey != null) existingHotkey = Hotkey;
 
-            try
-            {
-                _appService.UpdateHotkey(Hotkey);
-            }
-            catch (HotkeyAlreadyRegisteredException)
-            {
-                MessageBox.Show("Hotkey has been registered, please change it and try again.", "Warning",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-
-            var existingHotkey = _configService.CurrentConfig.Hotkeys.FirstOrDefault(h => h.Name == Hotkey.Name);
-            if (existingHotkey != null)
-            {
-                existingHotkey = Hotkey;
-            }
-
-            _configService.Save(_configService.CurrentConfig);
-        }
+        configService.Save(configService.CurrentConfig);
     }
 }

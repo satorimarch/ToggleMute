@@ -2,43 +2,42 @@
 using System.Text.Json;
 using ToggleMute.Models;
 
-namespace ToggleMute.Services
+namespace ToggleMute.Services;
+
+public interface IConfigService
 {
-    public interface IConfigService
+    public AppConfig CurrentConfig { get; set; }
+
+    public AppConfig Load();
+
+    public void Save(AppConfig config);
+}
+
+public class ConfigService : IConfigService
+{
+    private const string ConfigPath = "config.json";
+
+    public AppConfig CurrentConfig { get; set; } = new();
+
+    /// <remarks>
+    ///     TODO: Notify the outside on error occurs, instead of create new config silently.
+    /// </remarks>
+    public AppConfig Load()
     {
-        public AppConfig CurrentConfig { get; set; }
-
-        public AppConfig Load();
-
-        public void Save(AppConfig config);
-    }
-
-    public class ConfigService : IConfigService
-    {
-        private static readonly string ConfigPath = "config.json";
-
-        public AppConfig CurrentConfig { get; set; } = new();
-
-        /// <remarks>
-        /// TODO: Notify the outside on error occurs, instead of create new config silently.
-        /// </remarks>
-        public AppConfig Load()
+        if (File.Exists(ConfigPath) == false)
         {
-            if (File.Exists(ConfigPath) == false)
-            {
-                CurrentConfig = new AppConfig();
-                return CurrentConfig;
-            }
-
-            var json = File.ReadAllText(ConfigPath);
-            CurrentConfig = JsonSerializer.Deserialize<AppConfig>(json) ?? new AppConfig();
+            CurrentConfig = new AppConfig();
             return CurrentConfig;
         }
 
-        public void Save(AppConfig config)
-        {
-            var json = JsonSerializer.Serialize(config);
-            File.WriteAllText(ConfigPath, json);
-        }
+        var json = File.ReadAllText(ConfigPath);
+        CurrentConfig = JsonSerializer.Deserialize<AppConfig>(json) ?? new AppConfig();
+        return CurrentConfig;
+    }
+
+    public void Save(AppConfig config)
+    {
+        var json = JsonSerializer.Serialize(config);
+        File.WriteAllText(ConfigPath, json);
     }
 }

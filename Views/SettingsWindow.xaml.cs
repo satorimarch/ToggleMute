@@ -1,16 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using ToggleMute.ViewModels;
 
-namespace ToggleMute.Views
+namespace ToggleMute.Views;
+
+public partial class SettingsWindow : Window
 {
-    public partial class SettingsWindow : Window
+    public SettingsWindow()
     {
-        public SettingsWindow()
-        {
-            InitializeComponent();
-            DataContext = App.Current.ServiceProvider.GetRequiredService<SettingsViewModel>();
-        }
+        InitializeComponent();
+        DataContext = App.Current.ServiceProvider.GetRequiredService<SettingsViewModel>();
     }
 }
