@@ -40,8 +40,8 @@ public partial class HotkeySettingViewModel : ObservableObject
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
-        var existingHotkey = configService.CurrentConfig.Hotkeys.FirstOrDefault(h => h.Name == Hotkey.Name);
-        if (existingHotkey != null) existingHotkey = Hotkey;
+        var index = configService.CurrentConfig.Hotkeys.FindIndex(h => h.Name == Hotkey.Name);
+        configService.CurrentConfig.Hotkeys[index] = Hotkey;
 
         configService.Save(configService.CurrentConfig);
     }

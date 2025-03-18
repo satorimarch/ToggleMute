@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:ToggleMute.Controls"
-        xmlns:viewmodels="clr-namespace:ToggleMute.ViewModels"
-        d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}"
+        xmlns:vm="clr-namespace:ToggleMute.ViewModels"
+        d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel}"
         mc:Ignorable="d"
         Title="Settings"
         Height="400"
@@ -25,7 +25,7 @@
                     VerticalAlignment="Top"
                     Orientation="Vertical">
             <Label Content="Hotkeys:" />
-            <ItemsControl Name="HotkeyItemControl" ItemsSource="{Binding Hotkeys, Mode=TwoWay}">
+            <ItemsControl ItemsSource="{Binding Hotkeys, Mode=TwoWay}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid>

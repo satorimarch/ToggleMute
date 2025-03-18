@@ -19,8 +19,7 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _ignoredProcessesText = string.Empty;
 
-    public SettingsViewModel(IConfigService configService, IHotkeyService hotkeyService, IMuteService muteService,
-        IAppService appService)
+    public SettingsViewModel(IConfigService configService, IAppService appService)
     {
         _configService = configService;
         _appService = appService;
