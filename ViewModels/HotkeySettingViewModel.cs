@@ -1,5 +1,5 @@
-using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +28,10 @@ public partial class HotkeySettingViewModel : ObservableObject
     [RelayCommand]
     private void CommitHotkey(Hotkey hotkey)
     {
-        Hotkey = new HotkeySetting(Hotkey.Name, hotkey.Key, hotkey.Modifiers);
+        if (hotkey.Modifiers == ModifierKeys.None && hotkey.Key != Key.Escape) return;
+        if (hotkey.Key == Key.Escape) hotkey = new Hotkey();
+
+        Hotkey = new HotkeySetting(Hotkey.Name, hotkey);
 
         try
         {

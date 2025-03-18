@@ -8,29 +8,30 @@ namespace ToggleMute.Services;
 public interface IHotkeyService
 {
     /// <summary>
-    ///     Register or unregister hotkey according to <see cref="HotkeySetting.HasHotkey" />
+    ///     Register or unregister hotkey according to <see cref="HotkeySetting.IsNone" />
     /// </summary>
-    public void RegisterOrUnregisterHotkey(HotkeySetting hotkey, Action action);
+    public void RegisterOrUnregisterHotkey(HotkeySetting keySetting, Action action);
 
-    public void RegisterHotkey(HotkeySetting hotkey, Action action);
+    public void RegisterHotkey(HotkeySetting keySetting, Action action);
 
     public void UnregisterHotkey(string name);
 }
 
 public class HotkeyService : IHotkeyService
 {
-    public void RegisterOrUnregisterHotkey(HotkeySetting hotkey, Action action)
+    public void RegisterOrUnregisterHotkey(HotkeySetting keySetting, Action action)
     {
-        if (hotkey.HasHotkey())
-            RegisterHotkey(hotkey, action);
+        if (keySetting.IsNone() == false)
+            RegisterHotkey(keySetting, action);
         else
-            UnregisterHotkey(hotkey.Name);
+            UnregisterHotkey(keySetting.Name);
     }
 
-    public void RegisterHotkey(HotkeySetting hotkey, Action action)
+    public void RegisterHotkey(HotkeySetting keySetting, Action action)
     {
-        HotkeyManager.Current.AddOrReplace(hotkey.Name, hotkey.Key, hotkey.Modifiers, (sender, e) => { action(); });
-        Debug.WriteLine($"Hotkey has been registered: {hotkey.Name} with {hotkey}.");
+        HotkeyManager.Current.AddOrReplace(keySetting.Name, keySetting.Hotkey.Key, keySetting.Hotkey.Modifiers,
+            (sender, e) => { action(); });
+        Debug.WriteLine($"Hotkey has been registered: {keySetting.Name} with {keySetting}.");
     }
 
     public void UnregisterHotkey(string name)

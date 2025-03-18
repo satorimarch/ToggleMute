@@ -66,7 +66,8 @@ public partial class App : Application
             }
         }
 
-        trayIcon = (TaskbarIcon)FindResource("TrayIcon");
+        trayIcon = FindResource("TrayIcon") as TaskbarIcon ??
+                   throw new InvalidOperationException($"{nameof(trayIcon)} can't be null.");
     }
 
     private void Application_Exit(object sender, ExitEventArgs e)

@@ -11,18 +11,19 @@ public interface IAppService
 
     public void ResetConfig();
 
-    void UpdateHotkey(HotkeySetting hotkey);
+    void UpdateHotkey(HotkeySetting keySetting);
 
-    void RegisterHotkey(HotkeySetting hotkey);
+    void RegisterHotkey(HotkeySetting keySetting);
 
-    void UnregisterHotkey(HotkeySetting hotkey);
+    void UnregisterHotkey(HotkeySetting keySetting);
 
     void RegisterAllHotkeys(AppConfig config);
 
     void UnregisterAllHotkeys(AppConfig config);
 }
 
-public class AppService(IHotkeyService hotkeyService, IMuteService muteService, IConfigService configService) : IAppService
+public class AppService(IHotkeyService hotkeyService, IMuteService muteService, IConfigService configService)
+    : IAppService
 {
     public void InitFromConfig(AppConfig config)
     {
@@ -37,19 +38,19 @@ public class AppService(IHotkeyService hotkeyService, IMuteService muteService, 
         InitFromConfig(configService.CurrentConfig);
     }
 
-    public void UpdateHotkey(HotkeySetting hotkey)
+    public void UpdateHotkey(HotkeySetting keySetting)
     {
-        hotkeyService.RegisterOrUnregisterHotkey(hotkey, GetActionForHotkey(hotkey.Name));
+        hotkeyService.RegisterOrUnregisterHotkey(keySetting, GetActionForHotkey(keySetting.Name));
     }
 
-    public void RegisterHotkey(HotkeySetting hotkey)
+    public void RegisterHotkey(HotkeySetting keySetting)
     {
-        hotkeyService.RegisterHotkey(hotkey, GetActionForHotkey(hotkey.Name));
+        hotkeyService.RegisterHotkey(keySetting, GetActionForHotkey(keySetting.Name));
     }
 
-    public void UnregisterHotkey(HotkeySetting hotkey)
+    public void UnregisterHotkey(HotkeySetting keySetting)
     {
-        hotkeyService.UnregisterHotkey(hotkey.Name);
+        hotkeyService.UnregisterHotkey(keySetting.Name);
     }
 
     public void RegisterAllHotkeys(AppConfig config)

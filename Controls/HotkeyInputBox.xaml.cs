@@ -27,21 +27,7 @@ public partial class HotkeyInputBox : UserControl
         if (DataContext is not HotkeySettingViewModel context)
             throw new InvalidOperationException("Data context is null or incorrect type.");
 
-        Key key;
-        ModifierKeys modifiers;
-
-        if (e.Key == Key.Escape)
-        {
-            key = Key.None;
-            modifiers = ModifierKeys.None;
-        }
-        else
-        {
-            key = e.Key;
-            modifiers = Keyboard.Modifiers;
-        }
-
-        context.CommitHotkeyCommand.Execute(new Hotkey(key, modifiers));
+        context.CommitHotkeyCommand.Execute(new Hotkey(e.Key, Keyboard.Modifiers));
 
         e.Handled = true;
     }
