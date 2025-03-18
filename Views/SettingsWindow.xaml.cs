@@ -12,11 +12,5 @@ namespace ToggleMute.Views
             InitializeComponent();
             DataContext = App.Current.ServiceProvider.GetRequiredService<SettingsViewModel>();
         }
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            var context = DataContext as SettingsViewModel;
-            context?.CommitIgnoreProcessesCommand.Execute(null);
-        }
     }
 }

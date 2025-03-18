@@ -45,26 +45,17 @@
             </ItemsControl>
             <Label Content="Ignore process names (comma-separated, without &quot;.exe&quot;):"/>
             <TextBox Text="{Binding IgnoredProcessesText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                     Margin="10,5" Height="75" TextChanged="TextBox_TextChanged"/>
+                     Margin="10,5" Height="75"/>
         </StackPanel>
 
         <Border Grid.Row="1"
                 Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                 Padding="10">
 
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right">
-
-                <Button Content="Reset"
-                        Command="{Binding ResetConfigCommand}"
-                        Width="80"
-                        Margin="0,0,10,0" />
-
-                <Button Content="Save"
-                        Command="{Binding SaveConfigCommand}"
-                        Width="80"/>
-
-            </StackPanel>
+            <Button Content="Reset"
+                    HorizontalAlignment="Right"
+                    Command="{Binding ResetConfigCommand}"
+                     Width="80"/>
         </Border>
     </Grid>
 </Window>

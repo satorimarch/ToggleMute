@@ -13,7 +13,7 @@ namespace ToggleMute.Services
 {
     public interface IAppService
     {
-        public void LoadConfig(AppConfig config);
+        public void InitFromConfig(AppConfig config);
 
         public void ResetConfig();
 
@@ -41,7 +41,7 @@ namespace ToggleMute.Services
             this.configService = configService;
         }
 
-        public void LoadConfig(AppConfig config)
+        public void InitFromConfig(AppConfig config)
         {
             UnregisterAllHotkeys(config);
             RegisterAllHotkeys(config);
@@ -51,7 +51,7 @@ namespace ToggleMute.Services
         public void ResetConfig()
         {
             configService.CurrentConfig = new AppConfig();
-            LoadConfig(configService.CurrentConfig);
+            InitFromConfig(configService.CurrentConfig);
         }
 
         public void UpdateHotkey(HotkeySetting hotkey)

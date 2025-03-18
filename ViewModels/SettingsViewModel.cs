@@ -16,31 +16,44 @@ namespace ToggleMute.ViewModels
         private readonly IAppService _appService;
 
         [ObservableProperty]
-        private List<HotkeySettingViewModel> _hotkeys;
+        private List<HotkeySettingViewModel> _hotkeys = [];
 
         [ObservableProperty]
-        private string _ignoredProcessesText;
-
-        private readonly IMuteService _muteService;
+        private string _ignoredProcessesText = string.Empty;
 
         public SettingsViewModel(IConfigService configService, IHotkeyService hotkeyService, IMuteService muteService, IAppService appService)
         {
             _configService = configService;
-            _muteService = muteService;
             _appService = appService;
 
-            Hotkeys = new(_configService.CurrentConfig.Hotkeys.Select((hotkey) => new HotkeySettingViewModel(hotkey)));
-
-            _ignoredProcessesText = string.Join(',', configService.CurrentConfig.IgnoreProcesses);
+            LoadFromConfig(configService.CurrentConfig);
         }
 
-        [RelayCommand]
-        private void CommitIgnoreProcesses()
+        partial void OnIgnoredProcessesTextChanged(string value)
         {
-            Debug.WriteLine("Commiting ignore processes.");
-            _configService.CurrentConfig.IgnoreProcesses.Clear();
-            _configService.CurrentConfig.IgnoreProcesses.UnionWith(IgnoredProcessesText.Split(',').Select(s => s.Trim()));
-            _muteService.IgnoreProcesses = _configService.CurrentConfig.IgnoreProcesses;
+            _configService.CurrentConfig.IgnoreProcesses = new HashSet<string>(IgnoredProcessesText.Split(',').Select(s => s.Trim()));
+            SaveConfig();
+        }
+
+        private void LoadFromConfig(AppConfig config)
+        {
+            Hotkeys = new(config.Hotkeys.Select((hotkey) => new HotkeySettingViewModel(hotkey)));
+            IgnoredProcessesText = string.Join(',', config.IgnoreProcesses);
+        }
+
+        private AppConfig ToConfig()
+        {
+            return new()
+            {
+                Hotkeys = new(Hotkeys.Select(hotkeyViewModel => hotkeyViewModel.Hotkey)),
+                IgnoreProcesses = new HashSet<string>(IgnoredProcessesText.Split(',').Select(s => s.Trim()))
+            };
+        }
+
+        private void SaveConfig()
+        {
+            _configService.Save(this.ToConfig());
+            _appService.InitFromConfig(_configService.CurrentConfig);
         }
 
         [RelayCommand]
@@ -52,20 +65,9 @@ namespace ToggleMute.ViewModels
                 return;
             }
 
-            _appService.ResetConfig();
-
-            Hotkeys = new(_configService.CurrentConfig.Hotkeys.Select((hotkey) => new HotkeySettingViewModel(hotkey)));
+            this.LoadFromConfig(new AppConfig());
 
             MessageBox.Show("Settings have been reset.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        [RelayCommand]
-        private void SaveConfig()
-        {
-            _configService.CurrentConfig.Hotkeys = new(Hotkeys.Select(hotkeyViewModel => hotkeyViewModel.Hotkey));
-            _configService.Save(_configService.CurrentConfig);
-
-            MessageBox.Show("Settings have been saved.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

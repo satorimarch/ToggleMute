@@ -48,7 +48,7 @@ namespace ToggleMute
         {
             try
             {
-                _appService.LoadConfig(_configService.Load());
+                _appService.InitFromConfig(_configService.Load());
             }
             catch (HotkeyAlreadyRegisteredException)
             {
@@ -58,7 +58,7 @@ namespace ToggleMute
                 if (result == MessageBoxResult.Yes)
                 {
                     _configService.Save(new AppConfig());
-                    _appService.LoadConfig(_configService.CurrentConfig);
+                    _appService.InitFromConfig(_configService.CurrentConfig);
                 }
                 else
                 {
