@@ -16,6 +16,9 @@ public partial class HotkeySettingViewModel : ObservableObject
 
     private readonly IConfigService configService;
     private readonly IAppService appService;
+    private readonly ILanguageService langService;
+
+    public string HotkeyText { get; }
 
     public HotkeySettingViewModel(HotkeySetting hotkey)
     {
@@ -23,6 +26,9 @@ public partial class HotkeySettingViewModel : ObservableObject
 
         configService = App.Current.ServiceProvider.GetRequiredService<IConfigService>();
         appService = App.Current.ServiceProvider.GetRequiredService<IAppService>();
+        langService = App.Current.ServiceProvider.GetRequiredService<ILanguageService>();
+
+        HotkeyText = langService.GetText(Hotkey.Name);
     }
 
     [RelayCommand]
@@ -39,7 +45,7 @@ public partial class HotkeySettingViewModel : ObservableObject
         }
         catch (HotkeyAlreadyRegisteredException)
         {
-            MessageBox.Show("Hotkey has been registered, please change it and try again.", "Warning",
+            MessageBox.Show(langService.GetText("RetryHotkeyMessageBox"), langService.GetText("Warning"),
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 

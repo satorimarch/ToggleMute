@@ -7,21 +7,27 @@
              Exit="Application_Exit"
              ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
-        <tb:TaskbarIcon x:Key="TrayIcon"
-                        ToolTipText="ToggleMute"
-                        IconSource="app.ico"
-                        DoubleClickCommand="{Binding ShowSettingsCommand}">
+        <ResourceDictionary>
+            <tb:TaskbarIcon x:Key="TrayIcon"
+                            ToolTipText="ToggleMute"
+                            IconSource="app.ico"
+                            DoubleClickCommand="{Binding ShowSettingsCommand}">
 
-            <tb:TaskbarIcon.DataContext>
-                <viewModels:TrayViewModel />
-            </tb:TaskbarIcon.DataContext>
+                <tb:TaskbarIcon.DataContext>
+                    <viewModels:TrayViewModel />
+                </tb:TaskbarIcon.DataContext>
 
-            <tb:TaskbarIcon.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Settings" Command="{Binding ShowSettingsCommand}" />
-                    <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
-                </ContextMenu>
-            </tb:TaskbarIcon.ContextMenu>
-        </tb:TaskbarIcon>
+                <tb:TaskbarIcon.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Settings" Command="{Binding ShowSettingsCommand}" />
+                        <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
+                    </ContextMenu>
+                </tb:TaskbarIcon.ContextMenu>
+            </tb:TaskbarIcon>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Languages/Lang.en-us.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

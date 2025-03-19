@@ -9,8 +9,6 @@ public interface IAppService
 {
     public void InitFromConfig(AppConfig config);
 
-    public void ResetConfig();
-
     void UpdateHotkey(HotkeySetting keySetting);
 
     void RegisterHotkey(HotkeySetting keySetting);
@@ -30,12 +28,6 @@ public class AppService(IHotkeyService hotkeyService, IMuteService muteService, 
         UnregisterAllHotkeys(config);
         RegisterAllHotkeys(config);
         muteService.IgnoreProcesses = config.IgnoreProcesses;
-    }
-
-    public void ResetConfig()
-    {
-        configService.CurrentConfig = new AppConfig();
-        InitFromConfig(configService.CurrentConfig);
     }
 
     public void UpdateHotkey(HotkeySetting keySetting)

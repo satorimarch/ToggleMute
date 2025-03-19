@@ -12,6 +12,7 @@ public partial class SettingsViewModel : ObservableObject
 {
     private readonly IConfigService _configService;
     private readonly IAppService _appService;
+    private readonly ILanguageService _langService;
 
     [ObservableProperty]
     private List<HotkeySettingViewModel> _hotkeys = [];
@@ -19,10 +20,11 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _ignoredProcessesText = string.Empty;
 
-    public SettingsViewModel(IConfigService configService, IAppService appService)
+    public SettingsViewModel(IConfigService configService, IAppService appService, ILanguageService langService)
     {
         _configService = configService;
         _appService = appService;
+        _langService = langService;
 
         LoadFromConfig(configService.CurrentConfig);
     }
@@ -58,12 +60,13 @@ public partial class SettingsViewModel : ObservableObject
     [RelayCommand]
     private void ResetConfig()
     {
-        if (MessageBox.Show("Are you sure you want to reset all settings?", "Warning",
+        if (MessageBox.Show(_langService.GetText("ResetMessageBox"), _langService.GetText("Warning"),
                 MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
             return;
 
         LoadFromConfig(new AppConfig());
 
-        MessageBox.Show("Settings have been reset.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        MessageBox.Show(_langService.GetText("ResetMessageBoxOk"), _langService.GetText("Info"), MessageBoxButton.OK,
+            MessageBoxImage.Information);
     }
 }

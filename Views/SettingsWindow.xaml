@@ -8,8 +8,8 @@
         d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel}"
         mc:Ignorable="d"
         Title="Settings"
-        Height="400"
-        Width="400"
+        Height="450"
+        Width="420"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         Topmost="True">
@@ -24,7 +24,7 @@
                     Margin="15"
                     VerticalAlignment="Top"
                     Orientation="Vertical">
-            <Label Content="Hotkeys:" />
+            <Label Content="{DynamicResource Hotkeys}" />
             <ItemsControl ItemsSource="{Binding Hotkeys, Mode=TwoWay}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -34,15 +34,14 @@
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
 
-                            <Label VerticalAlignment="Center" Margin="10,0" Content="{Binding Hotkey.Name}" />
-                            <controls:HotkeyInputBox
-                                Grid.Column="1"
-                                Margin="10,5" />
+                            <Label VerticalAlignment="Center" Margin="10,0" Content="{Binding HotkeyText}" />
+                            <controls:HotkeyInputBox Grid.Column="1"
+                                                     Margin="10,5" />
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Label Content="Ignore process names (comma-separated, without &quot;.exe&quot;):" />
+            <Label Content="{DynamicResource IgnoreProcesses}" />
             <TextBox Text="{Binding IgnoredProcessesText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                      Margin="10,5" Height="75" />
         </StackPanel>
@@ -55,6 +54,8 @@
                     HorizontalAlignment="Right"
                     Command="{Binding ResetConfigCommand}"
                     Width="80" />
+
+
         </Border>
     </Grid>
 </Window>

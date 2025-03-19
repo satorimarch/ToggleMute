@@ -15,6 +15,7 @@ public partial class App : Application
     private TaskbarIcon? trayIcon;
     private readonly IConfigService configService;
     private readonly IAppService appService;
+    private readonly ILanguageService langService;
 
     public IServiceProvider ServiceProvider { get; }
 
@@ -25,6 +26,7 @@ public partial class App : Application
         ServiceProvider = ConfigureServices();
         configService = ServiceProvider.GetRequiredService<IConfigService>();
         appService = ServiceProvider.GetRequiredService<IAppService>();
+        langService = ServiceProvider.GetRequiredService<ILanguageService>();
 
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         DispatcherUnhandledException += App_DispatcherUnhandledException;
@@ -38,6 +40,7 @@ public partial class App : Application
         services.AddSingleton<IMuteService, MuteService>();
         services.AddSingleton<IHotkeyService, HotkeyService>();
         services.AddSingleton<IAppService, AppService>();
+        services.AddSingleton<ILanguageService, LanguageService>();
 
         services.AddSingleton<SettingsViewModel>();
 
@@ -55,8 +58,9 @@ public partial class App : Application
         }
         catch (HotkeyAlreadyRegisteredException ex)
         {
-            var result = MessageBox.Show($"Hotkey {ex.Name} has been registered, do you want to open the setting window?",
-                "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            var result = MessageBox.Show(
+                string.Format(langService.GetText("GotoSettingMessageBox"), ex.Name),
+                langService.GetText("Warning"), MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
             if (result == MessageBoxResult.Yes)
             {
@@ -66,7 +70,7 @@ public partial class App : Application
         }
         catch
         {
-            var result = MessageBox.Show("The settings are incorrect, do you want to reset?", "Error",
+            var result = MessageBox.Show(langService.GetText("ResetMessageBox"), langService.GetText("Error"),
                 MessageBoxButton.YesNo, MessageBoxImage.Error);
 
             if (result == MessageBoxResult.Yes)
@@ -90,12 +94,14 @@ public partial class App : Application
     private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         var ex = (Exception)e.ExceptionObject;
-        MessageBox.Show($"Unhandled exception: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        MessageBox.Show($"Unhandled exception: {ex.Message}", langService.GetText("Error"), MessageBoxButton.OK,
+            MessageBoxImage.Error);
     }
 
     private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
-        MessageBox.Show($"Dispatcher unhandled exception: {e.Exception.Message}", "Error", MessageBoxButton.OK,
+        MessageBox.Show($"Dispatcher unhandled exception: {e.Exception.Message}", langService.GetText("Error"),
+            MessageBoxButton.OK,
             MessageBoxImage.Error);
         e.Handled = true;
     }

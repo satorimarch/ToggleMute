@@ -13,4 +13,5 @@
         Text="{Binding Hotkey, Mode=OneWay}"
         IsReadOnly="True"
         PreviewKeyDown="HotkeyTextBox_PreviewKeyDown" />
+
 </UserControl>

@@ -1,0 +1,28 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <!-- settings -->
+
+    <sys:String x:Key="ToggleMuteActiveWindow">Toggle mute active window</sys:String>
+    <sys:String x:Key="MuteActiveWindow">Mute active window</sys:String>
+    <sys:String x:Key="UnmuteActiveWindow">Unmute active window</sys:String>
+    <sys:String x:Key="MuteOtherWindows">Mute other windows</sys:String>
+    <sys:String x:Key="UnmuteOtherWindows">Unmute other windows</sys:String>
+
+    <sys:String x:Key="Hotkeys">Hotkeys:</sys:String>
+    <sys:String x:Key="IgnoreProcesses">Ignore process names (comma-separated, without ".exe"):</sys:String>
+
+
+    <!-- message box -->
+    <sys:String x:Key="Info">Info</sys:String>
+    <sys:String x:Key="Warning">Warning</sys:String>
+    <sys:String x:Key="Error">Error</sys:String>
+
+    <sys:String x:Key="ResetMessageBox">Are you sure you want to reset all settings?</sys:String>
+    <sys:String x:Key="ResetMessageBoxOk">Settings have been reset.</sys:String>
+
+    <sys:String x:Key="RetryHotkeyMessageBox">Hotkey has been registered, please change it and try again.</sys:String>
+    <sys:String x:Key="GotoSettingMessageBox">Hotkey {0} has been registered, do you want to open the setting window?</sys:String>
+
+</ResourceDictionary>
