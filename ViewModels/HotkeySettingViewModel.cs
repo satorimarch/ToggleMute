@@ -18,7 +18,8 @@ public partial class HotkeySettingViewModel : ObservableObject
     private readonly IAppService appService;
     private readonly ILanguageService langService;
 
-    public string HotkeyText { get; }
+    [ObservableProperty]
+    private string _hotkeyText;
 
     public HotkeySettingViewModel(HotkeySetting hotkey)
     {
@@ -28,6 +29,7 @@ public partial class HotkeySettingViewModel : ObservableObject
         appService = App.Current.ServiceProvider.GetRequiredService<IAppService>();
         langService = App.Current.ServiceProvider.GetRequiredService<ILanguageService>();
 
+        langService.OnLanguageChanged += (s) => { HotkeyText = langService.GetText(Hotkey.Name); };
         HotkeyText = langService.GetText(Hotkey.Name);
     }
 

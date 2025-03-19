@@ -4,6 +4,8 @@
 
     <!-- settings -->
 
+    <sys:String x:Key="SettingsWindowTitle">Settings</sys:String>
+
     <sys:String x:Key="ToggleMuteActiveWindow">Toggle mute active window</sys:String>
     <sys:String x:Key="MuteActiveWindow">Mute active window</sys:String>
     <sys:String x:Key="UnmuteActiveWindow">Unmute active window</sys:String>

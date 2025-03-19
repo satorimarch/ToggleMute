@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -23,7 +22,7 @@ public partial class HotkeyInputBox : UserControl
 
     private void HotkeyTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
     {
-        var key = (e.Key == Key.System ? e.SystemKey : e.Key);
+        var key = e.Key == Key.System ? e.SystemKey : e.Key;
         if (IgnoreKeysArray.Contains(key)) return;
 
         if (DataContext is not HotkeySettingViewModel context)

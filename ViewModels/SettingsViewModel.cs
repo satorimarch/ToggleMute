@@ -69,4 +69,10 @@ public partial class SettingsViewModel : ObservableObject
         MessageBox.Show(_langService.GetText("ResetMessageBoxOk"), _langService.GetText("Info"), MessageBoxButton.OK,
             MessageBoxImage.Information);
     }
+
+    [RelayCommand]
+    private void ChangeLanguage(string lang)
+    {
+        _langService.ChangeLanguage(lang);
+    }
 }
