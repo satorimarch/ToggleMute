@@ -64,7 +64,9 @@ public partial class SettingsViewModel : ObservableObject
                 MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
             return;
 
-        LoadFromConfig(new AppConfig());
+        _configService.Save(new AppConfig());
+        _appService.InitFromConfig(_configService.CurrentConfig);
+        LoadFromConfig(_configService.CurrentConfig);
 
         MessageBox.Show(_langService.GetText("ResetMessageBoxOk"), _langService.GetText("Info"), MessageBoxButton.OK,
             MessageBoxImage.Information);

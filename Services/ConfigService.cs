@@ -37,6 +37,7 @@ public class ConfigService : IConfigService
 
     public void Save(AppConfig config)
     {
+        CurrentConfig = config;
         var json = JsonSerializer.Serialize(config);
         File.WriteAllText(ConfigPath, json);
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
-using Serilog.Core;
 using ToggleMute.Models;
 
 namespace ToggleMute.Services;
@@ -11,12 +10,6 @@ public interface IAppService
     public void InitFromConfig(AppConfig config);
 
     void UpdateHotkey(HotkeySetting keySetting);
-
-    void RegisterHotkey(HotkeySetting keySetting);
-
-    void UnregisterHotkey(HotkeySetting keySetting);
-
-    void RegisterAllHotkeys(AppConfig config);
 
     void UnregisterAllHotkeys(AppConfig config);
 }
@@ -34,16 +27,6 @@ public class AppService(IHotkeyService hotkeyService, IMuteService muteService, 
     public void UpdateHotkey(HotkeySetting keySetting)
     {
         hotkeyService.RegisterOrUnregisterHotkey(keySetting, GetActionForHotkey(keySetting.Name));
-    }
-
-    public void RegisterHotkey(HotkeySetting keySetting)
-    {
-        hotkeyService.RegisterHotkey(keySetting, GetActionForHotkey(keySetting.Name));
-    }
-
-    public void UnregisterHotkey(HotkeySetting keySetting)
-    {
-        hotkeyService.UnregisterHotkey(keySetting.Name);
     }
 
     public void RegisterAllHotkeys(AppConfig config)
