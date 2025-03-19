@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
+using Serilog.Core;
 using ToggleMute.Models;
 
 namespace ToggleMute.Services;
@@ -20,12 +21,12 @@ public interface IAppService
     void UnregisterAllHotkeys(AppConfig config);
 }
 
-public class AppService(IHotkeyService hotkeyService, IMuteService muteService, IConfigService configService)
+public class AppService(IHotkeyService hotkeyService, IMuteService muteService, ILogger<AppService> logger)
     : IAppService
 {
     public void InitFromConfig(AppConfig config)
     {
-        UnregisterAllHotkeys(config);
+        logger.LogInformation("Initializing config");
         RegisterAllHotkeys(config);
         muteService.IgnoreProcesses = config.IgnoreProcesses;
     }
@@ -47,8 +48,6 @@ public class AppService(IHotkeyService hotkeyService, IMuteService muteService, 
 
     public void RegisterAllHotkeys(AppConfig config)
     {
-        Debug.WriteLine("Start to register hotkeys from config.");
-
         UnregisterAllHotkeys(config);
         foreach (var hotkey in config.Hotkeys)
             hotkeyService.RegisterOrUnregisterHotkey(hotkey, GetActionForHotkey(hotkey.Name));

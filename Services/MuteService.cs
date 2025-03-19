@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Microsoft.Extensions.Logging;
 using NAudio.CoreAudioApi;
+using Serilog.Core;
 
 namespace ToggleMute.Services;
 
@@ -32,7 +34,7 @@ public interface IMuteService
 }
 
 /// <inheritdoc cref="IMuteService" />
-public class MuteService : IMuteService
+public class MuteService(ILogger<MuteService> logger) : IMuteService
 {
     public HashSet<string>? IgnoreProcesses { get; set; }
 
@@ -51,37 +53,36 @@ public class MuteService : IMuteService
 
     public void ToggleMuteActiveWindow()
     {
-        Debug.WriteLine("Try to toggle mute active window.");
         var processId = GetActiveWindowProcessId();
-
+        logger.LogInformation("Toggling mute for active window with process ID: {ProcessId}", processId);
         ToggleMuteApplication(EqualByIdAndName(processId));
     }
 
     public void MuteActiveWindow()
     {
-        Debug.WriteLine("Try to mute active window.");
         var processId = GetActiveWindowProcessId();
+        logger.LogInformation("Muting active window with process ID: {ProcessId}", processId);
         MuteApplication(EqualByIdAndName(processId));
     }
 
     public void UnmuteActiveWindow()
     {
-        Debug.WriteLine("Try to unmute active window.");
         var processId = GetActiveWindowProcessId();
+        logger.LogInformation("Unmuting active window with process ID: {ProcessId}", processId);
         UnmuteApplication(EqualByIdAndName(processId));
     }
 
     public void UnmuteOtherWindows()
     {
-        Debug.WriteLine("Try to unmute other windows.");
         var processId = GetActiveWindowProcessId();
+        logger.LogInformation("Unmuting other windows excluding process ID: {ProcessId}", processId);
         UnmuteApplication(NotEqualByIdAndName(processId));
     }
 
     public void MuteOtherWindows()
     {
-        Debug.WriteLine("Try to mute other windows.");
         var processId = GetActiveWindowProcessId();
+        logger.LogInformation("Muting other windows excluding process ID: {ProcessId}", processId);
         MuteApplication(NotEqualByIdAndName(processId));
     }
 

@@ -3,7 +3,9 @@ using System.Windows;
 using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NHotkey;
+using Serilog;
 using ToggleMute.Models;
 using ToggleMute.Services;
 using ToggleMute.ViewModels;
@@ -16,6 +18,7 @@ public partial class App : Application
     private readonly IConfigService configService;
     private readonly IAppService appService;
     private readonly ILanguageService langService;
+    private readonly ILogger<App> logger;
 
     public IServiceProvider ServiceProvider { get; }
 
@@ -23,10 +26,18 @@ public partial class App : Application
 
     public App()
     {
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.File("logs/program.log", outputTemplate:
+                "[{Level}] {Timestamp:HH:mm:ss} - {Message:lj}{NewLine}{Exception}",
+                rollingInterval: RollingInterval.Day, retainedFileCountLimit: 3)
+            .CreateLogger();
+
         ServiceProvider = ConfigureServices();
+
         configService = ServiceProvider.GetRequiredService<IConfigService>();
         appService = ServiceProvider.GetRequiredService<IAppService>();
         langService = ServiceProvider.GetRequiredService<ILanguageService>();
+        logger = ServiceProvider.GetRequiredService<ILogger<App>>();
 
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         DispatcherUnhandledException += App_DispatcherUnhandledException;
@@ -42,6 +53,7 @@ public partial class App : Application
         services.AddSingleton<IAppService, AppService>();
         services.AddSingleton<ILanguageService, LanguageService>();
 
+        services.AddLogging(builder => builder.AddSerilog(dispose: true));
         services.AddSingleton<SettingsViewModel>();
 
         return services.BuildServiceProvider();
@@ -94,13 +106,15 @@ public partial class App : Application
     private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         var ex = (Exception)e.ExceptionObject;
-        MessageBox.Show($"Unhandled exception: {ex.Message}", langService.GetText("Error"), MessageBoxButton.OK,
+        logger.LogCritical(ex, "Unhandled exception");
+        MessageBox.Show($"Unhandled exception: {ex.Message}", "Error", MessageBoxButton.OK,
             MessageBoxImage.Error);
     }
 
     private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
-        MessageBox.Show($"Dispatcher unhandled exception: {e.Exception.Message}", langService.GetText("Error"),
+        logger.LogCritical(e.Exception, "Dispatcher unhandled exception");
+        MessageBox.Show($"Dispatcher unhandled exception: {e.Exception.Message}", "Error",
             MessageBoxButton.OK,
             MessageBoxImage.Error);
         e.Handled = true;

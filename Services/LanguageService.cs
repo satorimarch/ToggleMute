@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using Microsoft.Extensions.Logging;
 
 namespace ToggleMute.Services;
 
@@ -15,10 +16,12 @@ public interface ILanguageService
     public event Action<string>? OnLanguageChanged;
 }
 
-public class LanguageService : ILanguageService
+public class LanguageService(ILogger<LanguageService> logger) : ILanguageService
 {
     public void ChangeLanguage(string language)
     {
+        logger.LogInformation("Changing language to {language}", language);
+
         var cultureInfo = new CultureInfo(language);
         Thread.CurrentThread.CurrentUICulture = cultureInfo;
         Thread.CurrentThread.CurrentCulture = cultureInfo;

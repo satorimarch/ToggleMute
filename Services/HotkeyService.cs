@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using NHotkey.Wpf;
+using Serilog.Core;
 using ToggleMute.Models;
 
 namespace ToggleMute.Services;
@@ -17,7 +18,7 @@ public interface IHotkeyService
     public void UnregisterHotkey(string name);
 }
 
-public class HotkeyService : IHotkeyService
+public class HotkeyService(ILogger<HotkeyService> logger) : IHotkeyService
 {
     public void RegisterOrUnregisterHotkey(HotkeySetting keySetting, Action action)
     {
@@ -29,13 +30,14 @@ public class HotkeyService : IHotkeyService
 
     public void RegisterHotkey(HotkeySetting keySetting, Action action)
     {
+        logger.LogInformation("Registering hotkey: {Hotkey} for {HotkeyName}", keySetting.Hotkey, keySetting.Name);
         HotkeyManager.Current.AddOrReplace(keySetting.Name, keySetting.Hotkey.Key, keySetting.Hotkey.Modifiers,
             (sender, e) => { action(); });
-        Debug.WriteLine($"Hotkey has been registered: {keySetting.Name} with {keySetting}.");
     }
 
     public void UnregisterHotkey(string name)
     {
+        logger.LogInformation("UnRegistering {HotkeyName}", name);
         HotkeyManager.Current.Remove(name);
     }
 }
